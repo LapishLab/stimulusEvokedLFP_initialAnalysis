@@ -1,53 +1,43 @@
+%% Variables you might want to change
 rec_folder = 'C:\Users\david\Desktop\Plasticity\2024-10-23_12-54-19';
 %rec_folder = 'C:\Users\david\Desktop\Plasticity\Rat_51\2024-10-24_13-12-17';
 
 nPulsesPerCurrent = 100;
 windowTime = 0.4;
 downsampleFactor = 30; % Warning, changing this will make time scale incorrect 
-%%
+
+%% Load entire recording (takes a long time)
 recording = loadRecording(rec_folder);
 
-%%
+%% Get stimulus ON timestamps and full LFP recording
 stimTimes = getStimTimes(recording);
 data = getData(recording);
 data = downsampleData(data, downsampleFactor);
 clear recording % get rid of recording variable to free up memory
-%%
+
+%% Slice the data by stimulus onset
 slicedData = sliceDataByStim(data,stimTimes,windowTime);
 
-%%
+%% Reshape the data into current amplitude groups
 shapedData = reshapeByCurrent(slicedData, nPulsesPerCurrent);
-%%
+
+%% Figures
 figure(1)
 plotOverallMean(slicedData)
-%%
+
 figure(2)
 plotContactResp(shapedData)
-%%
+
 figure(3)
 plotResponseByGroups(shapedData)
-%%
 
 figure(4)
+plotPeaks(shapedData)
 
-tiledlayout(1,3)
-nexttile
-plotPeaks(shapedData(:,:,1:10,:))
-title('10 pulses / group')
-
-nexttile
-plotPeaks(shapedData(:,:,1:20,:))
-title('30 pulses / group')
-
-nexttile
-plotPeaks(shapedData(:,:,1:100,:))
-title('100 pulses / group')
-
-%%
 % figure(5)
 % plotMovie(slicedData)
 
-%%
+%% Functions
 function plotMovie(slicedData)
 numTrials = size(slicedData,3);
 ymax = max(slicedData(:)) * .75;
