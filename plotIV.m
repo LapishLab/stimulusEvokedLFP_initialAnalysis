@@ -28,9 +28,11 @@ plotContactResp(shapedData)
 
 figure(3)
 plotResponseByGroups(shapedData)
- 
+
+peaks = getPeakResponse(shapedData);
+%%
 figure(4)
-plotPeaks(shapedData)
+plotPeaks(currents,peaks)
 
 % figure(5)
 % plotMovie(slicedData)
@@ -62,12 +64,11 @@ function peaks = getPeakResponse(shapedData)
     peaks = squeeze(peaks);
 end
 
-function plotPeaks(shapedData)
-    peaks = getPeakResponse(shapedData);
-    addShadedLine([],peaks,{})
+function plotPeaks(current,peaks)
+    addShadedLine(current,peaks,{});
     yline(0)
     ylabel('Voltage (arbitrary)')
-    xlabel('Current amplitude group')
+    xlabel('Current')
 end
 
 function plotOverallMean(slicedData)
