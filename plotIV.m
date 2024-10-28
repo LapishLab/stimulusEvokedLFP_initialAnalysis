@@ -54,12 +54,13 @@ end
 
 end
 
-function peaks = getPeakResponse(shapedData)
-    m = mean(shapedData, [1,3,4]);
+function peaks = getPeakResponse(data)
+    v = data.samples;
+    m = mean(v, [1,3,4]);
     m = abs(m);
     [~, maxInd] = max(m);
 
-    peaks = shapedData(:,maxInd,:,:);
+    peaks = v(:,maxInd,:,:);
     peaks = mean(peaks,1);
     peaks = squeeze(peaks);
 end
@@ -72,16 +73,16 @@ function plotPeaks(current,peaks)
 end
 
 function plotOverallMean(slicedData)
-    m = squeeze(mean(slicedData, 1)); % average across probes
-    plotMeanAndSEM([],m',{})
+    m = squeeze(mean(slicedData.samples, 1)); % average across probes
+    plotMeanAndSEM(slicedData.timestamps,m',{})
     yline(0)
     xlabel('Time (ms)')
     ylabel('Voltage (arbitrary)')
     title('Overall Mean')
 end
 
-function plotContactResp(shapedData)
-    m = mean(shapedData, [3,4]);
+function plotContactResp(data)
+    m = mean(data.samples, [3,4]);
     m = squeeze(m);
     imagesc(m)
     ylabel('Probe contact')
@@ -90,18 +91,18 @@ function plotContactResp(shapedData)
     c.Label.String = 'Voltage';
 end
 
-function plotResponseByGroups(shapedData)
-    m = mean(shapedData, 1);% average together probe contacts
+function plotResponseByGroups(data)
+    m = mean(data.samples, 1);% average together probe contacts
     numGroups = size(m,4);
-    avg = squeeze(mean(m, 3)); % average identical pulse amplitudes
-    err = squeeze(std(m, 0, 3) / sqrt(size(m, 3))); % SEM accross pulse amplitudes
+
     title('Response across amp groups')
     tiledlayout(numGroups, 1)
-    minY = min(avg(:));
-    maxY = max(avg(:));
+    minY = min(m(:));
+    maxY = max(m(:));
     for i = 1:numGroups
         nexttile
-        errorbar(avg(:,i),err(:,i))
+        y = squeeze(m(:,:,:,i))';
+        plotMeanAndSEM(data.timestamps,y, {})
         ylim([minY,maxY])
         set(gca,'xtick',[])
         yline(0)
@@ -110,8 +111,8 @@ function plotResponseByGroups(shapedData)
     set(gca,'xtick',0:50:1000)
 end
 
-function shapedData = reshapeByCurrent(slicedData, currents)
-    sz = size(slicedData);
+function data = reshapeByCurrent(data, currents)
+    sz = size(data.samples);
     numCurrents = length(currents);
     pulsePerGroup = sz(3) / numCurrents;
     if pulsePerGroup ~= round(pulsePerGroup)
@@ -120,7 +121,8 @@ function shapedData = reshapeByCurrent(slicedData, currents)
             '%i ON events detected, ' ...
             '%i currents listed'], sz(3), numCurrents);
     end
-    shapedData = reshape(slicedData, sz(1),sz(2),pulsePerGroup,numCurrents);
+    data.dimensions = ["probe channels", "time", "pulses/group", "current amplitude"];
+    data.samples = reshape(data.samples, sz(1),sz(2),pulsePerGroup,numCurrents);
 end
 
 function slicedData = sliceDataByStim(data,stimTimes,windowTime)
@@ -129,8 +131,10 @@ function slicedData = sliceDataByStim(data,stimTimes,windowTime)
 
     windowPoints = round(windowTime/period);
     numPulses = length(stimTimes);
-    
-    slicedData = nan( ...
+
+    slicedData = data;
+    slicedData.dimensions = ['probe channels', 'time', 'pulses'];
+    slicedData.samples = nan( ...
         nchannels, ...
         windowPoints, ...
         numPulses ...
@@ -139,8 +143,11 @@ function slicedData = sliceDataByStim(data,stimTimes,windowTime)
     for i = 1:numPulses
         startInd = find(stimTimes(i)<data.timestamps, 1);
         stopInd = startInd + windowPoints - 1;
-        slicedData(:,:,i) = data.samples(:, startInd:stopInd);
+        slicedData.samples(:,:,i) = data.samples(:, startInd:stopInd);
     end
+
+    slicedData.timestamps = data.timestamps(startInd:stopInd) - data.timestamps(startInd);
+    slicedData.sampleNumbers = [];
 end
 
 function recording = loadRecording(rec_path)
