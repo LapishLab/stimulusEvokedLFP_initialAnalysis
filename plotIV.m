@@ -43,7 +43,7 @@ numTrials = size(slicedData,3);
 ymax = max(slicedData(:)) * .75;
 ymin = min(slicedData(:)) * .75;
 for i=1:10:numTrials
-    addShadedLine([],slicedData(:,:,i),{})
+    plotMeanAndSEM([],slicedData(:,:,i),{})
     yline(0)
     ylim([ymin,ymax])
     xlabel('Time')
@@ -65,7 +65,7 @@ function peaks = getPeakResponse(shapedData)
 end
 
 function plotPeaks(current,peaks)
-    addShadedLine(current,peaks,{});
+    plotMeanAndSEM(current,peaks,{});
     yline(0)
     ylabel('Voltage (arbitrary)')
     xlabel('Current')
@@ -73,7 +73,7 @@ end
 
 function plotOverallMean(slicedData)
     m = squeeze(mean(slicedData, 1)); % average across probes
-    addShadedLine([],m',{})
+    plotMeanAndSEM([],m',{})
     yline(0)
     xlabel('Time (ms)')
     ylabel('Voltage (arbitrary)')
