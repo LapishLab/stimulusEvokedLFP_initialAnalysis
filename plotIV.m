@@ -97,17 +97,17 @@ function plotResponseByGroups(data)
 
     title('Response across amp groups')
     tiledlayout(numGroups, 1)
-    minY = min(m(:));
-    maxY = max(m(:));
+    minY = min(mean(m, 3), [], 'all');
+    maxY = max(mean(m, 3), [], 'all');
     for i = 1:numGroups
         nexttile
         y = squeeze(m(:,:,:,i))';
-        plotMeanAndSEM(data.timestamps,y, {})
+        plotMeanAndSEM(data.timestamps*1000,y, {})
         ylim([minY,maxY])
         set(gca,'xtick',[])
         yline(0)
     end
-    xlabel('Time')
+    xlabel('Time (ms)')
     set(gca,'xtick',0:50:1000)
 end
 
