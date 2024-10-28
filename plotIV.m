@@ -2,7 +2,7 @@ clear
 %% Variables you might want to change
 recFolder
 windowTime = 0.4;
-downsampleFactor = 30; % Warning, changing this will make time scale incorrect 
+downSampledRate = 1; % new sample rate in kHz
 currents = 1:10;
 %% Load entire recording (takes a long time)
 recording = loadRecording(rec_folder);
@@ -10,7 +10,7 @@ recording = loadRecording(rec_folder);
 %% Get stimulus ON timestamps and full LFP recording
 stimTimes = getStimTimes(recording);
 data = getData(recording);
-data = downsampleData(data, downsampleFactor);
+data = downsampleData(data, downSampledRate);
 clear recording % get rid of recording variable to free up memory
 
 %% Slice the data by stimulus onset
@@ -161,16 +161,14 @@ function data = getData(recording)
 end
 
 
-function data = downsampleData(data, downSampleFactor)
+function data = downsampleData(data, downSampledRate)
+    currentSampleRate = data.metadata.sampleRate / 1e3;
+    downSampleFactor = round(currentSampleRate / downSampledRate);
+
     data.timestamps = data.timestamps(1:downSampleFactor:end);
     data.samples = data.samples(:, 1:downSampleFactor:end);
-    % data.timestamps = decimate(data.timestamps, downSampleFactor, "fir");
-    % nContacts = size(data.samples, 1);
-    % newSamples = nan(nContacts, length(data.timestamps));
-    % for i=1:nContacts
-    %     newSamples(i, :) = decimate(double(data.samples(i,:)), downSampleFactor);
-    % end
-    data.sampleNumbers = [];
+    data.sampleNumbers = data.sampleNumbers(1:downSampleFactor:end);
+    data.metadata.sampleRate = downSampledRate;
 end
 
 function stimTimes = getStimTimes(recording)
