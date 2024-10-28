@@ -1,21 +1,22 @@
 rec_folder = 'C:\Users\david\Desktop\Plasticity\2024-10-23_12-54-19';
 %rec_folder = 'C:\Users\david\Desktop\Plasticity\Rat_51\2024-10-24_13-12-17';
 
+nPulsesPerCurrent = 100;
+windowTime = 0.4;
+downsampleFactor = 30; % Warning, changing this will make time scale incorrect 
+%%
 recording = loadRecording(rec_folder);
 
 %%
 stimTimes = getStimTimes(recording);
 data = getData(recording);
-data = downsampleData(data, 30);
+data = downsampleData(data, downsampleFactor);
 clear recording % get rid of recording variable to free up memory
 %%
-windowTime = 0.4;
 slicedData = sliceDataByStim(data,stimTimes,windowTime);
 
 %%
-nPulsesPerCurrent = 100;
 shapedData = reshapeByCurrent(slicedData, nPulsesPerCurrent);
-
 %%
 figure(1)
 plotOverallMean(slicedData)
