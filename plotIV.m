@@ -66,7 +66,7 @@ function peaks = getPeakResponse(data)
 end
 
 function plotPeaks(current,peaks)
-    plotMeanAndSEM(current,peaks,{});
+    plotMedianAndMAD(current,peaks,{});
     yline(0)
     ylabel('Voltage (arbitrary)')
     xlabel('Current')
