@@ -20,18 +20,18 @@ slicedData = sliceDataByStim(data,stimTimes,windowTime);
 shapedData = reshapeByCurrent(slicedData, currents);
 
 %% Figures
-figure(1)
+figure(1); clf
 plotOverallMean(slicedData)
 
-figure(2)
+figure(2); clf
 plotContactResp(shapedData)
 
-figure(3)
+figure(3); clf
 plotResponseByGroups(shapedData)
 
 peaks = getPeakResponse(shapedData);
-%%
-figure(4)
+
+figure(4); clf
 plotPeaks(currents,peaks)
 
 % figure(5)
