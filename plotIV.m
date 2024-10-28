@@ -1,11 +1,9 @@
+clear
 %% Variables you might want to change
-rec_folder = 'C:\Users\david\Desktop\Plasticity\2024-10-23_12-54-19';
-%rec_folder = 'C:\Users\david\Desktop\Plasticity\Rat_51\2024-10-24_13-12-17';
-
-nPulsesPerCurrent = 100;
+recFolder
 windowTime = 0.4;
 downsampleFactor = 30; % Warning, changing this will make time scale incorrect 
-
+currents = 1:10;
 %% Load entire recording (takes a long time)
 recording = loadRecording(rec_folder);
 
@@ -19,7 +17,7 @@ clear recording % get rid of recording variable to free up memory
 slicedData = sliceDataByStim(data,stimTimes,windowTime);
 
 %% Reshape the data into current amplitude groups
-shapedData = reshapeByCurrent(slicedData, nPulsesPerCurrent);
+shapedData = reshapeByCurrent(slicedData, currents);
 
 %% Figures
 figure(1)
@@ -30,7 +28,7 @@ plotContactResp(shapedData)
 
 figure(3)
 plotResponseByGroups(shapedData)
-
+ 
 figure(4)
 plotPeaks(shapedData)
 
@@ -111,9 +109,17 @@ function plotResponseByGroups(shapedData)
     set(gca,'xtick',0:50:1000)
 end
 
-function shapedData = reshapeByCurrent(slicedData, nPulsesPerCurrent)
+function shapedData = reshapeByCurrent(slicedData, currents)
     sz = size(slicedData);
-    shapedData = reshape(slicedData, sz(1),sz(2),nPulsesPerCurrent,[]);
+    numCurrents = length(currents);
+    pulsePerGroup = sz(3) / numCurrents;
+    if pulsePerGroup ~= round(pulsePerGroup)
+        error(['Number of ON events does not evenly divide by' ...
+            ' the number of currents listed: ' ...
+            '%i ON events detected, ' ...
+            '%i currents listed'], sz(3), numCurrents);
+    end
+    shapedData = reshape(slicedData, sz(1),sz(2),pulsePerGroup,numCurrents);
 end
 
 function slicedData = sliceDataByStim(data,stimTimes,windowTime)
