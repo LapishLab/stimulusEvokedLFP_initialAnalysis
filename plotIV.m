@@ -1,8 +1,8 @@
 clear
 %% Variables you might want to change
-windowTime = 0.2;
+currents = 1:10; % List of current amplitudes 
+windowTime = 0.2; % Length of data to sample after stimulus (seconds)
 downSampledRate = 1; % new sample rate in kHz
-currents = 1:10;
 
 %% Load entire recording (takes a long time)
 fprintf('Select OpenEphys recording folder (e.g. 2024-10-28_14-52-49) \n')
