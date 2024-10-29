@@ -45,3 +45,6 @@ calcStimHalfMax(currents, peaks)
 
 % figure(5)
 % plotMovie(slicedData)
+
+%%
+%goodChannels = getPCA(shapedData);
