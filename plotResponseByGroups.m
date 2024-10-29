@@ -9,7 +9,7 @@ function plotResponseByGroups(data)
     for i = 1:numGroups
         nexttile
         y = squeeze(m(:,:,:,i))';
-        plotMeanAndSEM(data.timestamps*1000,y, {})
+        plotMeanAndSEM(data.timestamps*1000,y, {});
         ylim([minY,maxY])
         set(gca,'xtick',[])
         yline(0)
