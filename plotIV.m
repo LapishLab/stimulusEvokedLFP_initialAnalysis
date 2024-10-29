@@ -1,11 +1,11 @@
 clear
 %% Variables you might want to change
-recFolder
 windowTime = 0.2;
 downSampledRate = 1; % new sample rate in kHz
 currents = 1:10;
+
 %% Load entire recording (takes a long time)
-recording = loadRecording(rec_folder);
+recording = loadRecording(uigetdir());
 
 %% Get stimulus ON timestamps and full LFP recording
 stimTimes = getStimTimes(recording);
