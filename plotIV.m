@@ -1,8 +1,10 @@
 clear
 %% Variables you might want to change
-currents = 1:10; % List of current amplitudes 
-windowTime = 0.2; % Length of data to sample after stimulus (seconds)
+currents = 50:50:500; % List of current amplitudes 
+windowTime = 0.4; % Length of data to sample after stimulus (seconds)
 downSampledRate = 1; % new sample rate in kHz
+
+channelsToUse = 1:64;
 
 %% Load entire recording (takes a long time)
 fprintf('Select OpenEphys recording folder (e.g. 2024-10-28_14-52-49) \n')
@@ -14,6 +16,9 @@ data = getData(recording);
 data = downsampleData(data, downSampledRate);
 clear recording % get rid of recording variable to free up memory
 
+
+%% cut out channels
+data.samples = data.samples(channelsToUse,:);
 %% Slice the data by stimulus onset
 slicedData = sliceDataByStim(data,stimTimes,windowTime);
 
@@ -102,7 +107,7 @@ function plotOverallMean(slicedData)
     m = squeeze(mean(slicedData.samples, 1)); % average across probes
     plotMeanAndSEM(slicedData.timestamps,m',{})
     yline(0)
-    xlabel('Time (ms)')
+    xlabel('Time (s)')
     ylabel('Voltage (arbitrary)')
     title('Overall Mean')
 end
