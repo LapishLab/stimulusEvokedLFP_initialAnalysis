@@ -5,6 +5,7 @@ downSampledRate = 1; % new sample rate in kHz
 currents = 1:10;
 
 %% Load entire recording (takes a long time)
+fprintf('Select OpenEphys recording folder (e.g. 2024-10-28_14-52-49) \n')
 recording = loadRecording(uigetdir());
 
 %% Get stimulus ON timestamps and full LFP recording
