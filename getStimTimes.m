@@ -1,10 +1,10 @@
-function stimTimes = getStimTimes(recording)
+function stimTimes = getStimTimes(recording, line)
     % get Event Processor name (assuming only 1 OE_FPGA_Acquisition_Board-108)
     eventProcessors = recording.ttlEvents.keys();
     processor = eventProcessors{1};
     events = recording.ttlEvents(processor);
-    stimTimes = events.timestamp(events.state==1);
-    stimOff = events.timestamp(events.state==0);
+    stimTimes = events.timestamp(events.state==1 & events.line==line);
+    stimOff = events.timestamp(events.state==0 & events.line==line);
 
     if(length(stimTimes) ~= length(stimOff))
         warning(['A different number of Event Onset and Offset times' ...

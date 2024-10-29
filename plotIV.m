@@ -11,7 +11,7 @@ fprintf('Select OpenEphys recording folder (e.g. 2024-10-28_14-52-49) \n')
 recording = loadRecording(uigetdir());
 
 %% Get stimulus ON timestamps and full LFP recording
-stimTimes = getStimTimes(recording);
+stimTimes = getStimTimes(recording, 1);
 data = getData(recording);
 data = downsampleData(data, downSampledRate);
 clear recording % get rid of recording variable to free up memory
