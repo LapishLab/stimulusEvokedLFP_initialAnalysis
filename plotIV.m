@@ -48,3 +48,5 @@ calcStimHalfMax(currents, peaks)
 
 %%
 %goodChannels = getPCA(shapedData);
+
+% getPCAFull(slicedData)
