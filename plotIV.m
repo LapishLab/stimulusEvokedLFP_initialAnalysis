@@ -1,9 +1,12 @@
 clear
 %% Variables you might want to change
 currents = 50:50:500; % List of current amplitudes 
+%currents(9) = [] %If missing pulse, you can remove current like this
+%(removed the 9th pulse set)
 windowTime = 0.4; % Length of data to sample after stimulus (seconds)
 downSampledRate = 1; % new sample rate in kHz
 
+inputTriggerLine = 1;
 channelsToUse = 1:64;
 
 %% Load entire recording (takes a long time)
@@ -11,7 +14,7 @@ fprintf('Select OpenEphys recording folder (e.g. 2024-10-28_14-52-49) \n')
 recording = loadRecording(uigetdir());
 
 %% Get stimulus ON timestamps and full LFP recording
-stimTimes = getStimTimes(recording, 1);
+stimTimes = getStimTimes(recording, inputTriggerLine);
 data = getData(recording);
 data = downsampleData(data, downSampledRate);
 clear recording % get rid of recording variable to free up memory
