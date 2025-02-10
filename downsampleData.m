@@ -3,7 +3,8 @@ function data = downsampleData(data, downSampledRate)
     downSampleFactor = round(currentSampleRate / downSampledRate);
 
     data.timestamps = data.timestamps(1:downSampleFactor:end);
-    data.samples = decimate(data.samples, downSampleFactor);
+    data.samples = single(data.samples);
+    data.samples = decimate(data.samples(:), downSampleFactor);
     data.sampleNumbers = data.sampleNumbers(1:downSampleFactor:end);
     data.metadata.sampleRate = downSampledRate;
 end
