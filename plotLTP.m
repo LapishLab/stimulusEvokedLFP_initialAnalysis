@@ -26,25 +26,25 @@ data.samples = data.samples(channelsToUse,:);
 slicedData = sliceDataByStim(data,stimTimes,windowTime);
 
 %% Reshape the data into current amplitude groups
-shapedData = reshapeByCurrent(slicedData, currents);
+% shapedData = reshapeByCurrent(slicedData, currents);
 
 %% Figures
-figure(1); clf
-plotOverallMean(slicedData)
-
-figure(2); clf
-plotContactResp(shapedData)
-
-figure(3); clf
-plotResponseByGroups(shapedData)
-
-peaks = getPeakResponse(shapedData);
-
-figure(4); clf
-plotPeaks(currents,peaks)
-
-figure(5); clf
-calcStimHalfMax(currents, peaks)
+% figure(1); clf
+% plotOverallMean(slicedData)
+% 
+% figure(2); clf
+% plotContactResp(shapedData)
+% 
+% figure(3); clf
+% plotResponseByGroups(shapedData)
+% 
+% peaks = getPeakResponse(shapedData);
+% 
+% figure(4); clf
+% plotPeaks(currents,peaks)
+% 
+% figure(5); clf
+% calcStimHalfMax(currents, peaks)
 
 % figure(5)
 % plotMovie(slicedData)
