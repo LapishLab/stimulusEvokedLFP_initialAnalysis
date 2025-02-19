@@ -5,6 +5,7 @@ function data = getData(recording)
     
     % Get the continuous data from the current stream/recording
     data = recording.continuous(streamName);
+    data.metadata.channels = recording.info.continuous.channels;
 
     srWarningThreshold = 2;
     maxTimeDiff = max(diff(data.timestamps));
